@@ -8,6 +8,22 @@ In this specific example, we will be using linear regression analysis in a pytho
 to create a widget shows a matplotlib chart, also use the resulting data to create a widget and 
 update a widget that automates a presentation file (e.g. a PowerPoint document).
 
+### Getting Started
+
+You can get started by cloning this repository from the command line:
+~~~~bash
+git clone https://github.com/presalytics/Example--InteroperableStory.git
+~~~~
+
+Then create a python virtual environment and install the required packages via pip:
+~~~~bash
+python3 -m venv venv
+. venv/bin/activate # venv\Scripts\activate.bat on Windows
+pip install presalytics sklearn
+~~~~
+
+Now, you environment is set up for the walk through below.  If youre curious how this example works, you should read the sections on [example.py](#wrapping-the-figure-in-presalytics-middleware) and [widget.py](#understanding-widget.py:-quickly-creating-templates-with-office-documents).  If you want to get going quickly, jump ahead to running the [commands to build the story](#building-the-story-from-the-command-line) in the command line. 
+
 ---
 
 ### The Dummy Analysis Contained in `example.py`
@@ -74,7 +90,7 @@ Story Outline is updated, this instance of `MatplotlibResponsiveFigure` will upd
 
 ---
 
-### Understanding `widget.py`: Quickly creating templates with office documents
+### Understanding widget.py: Quickly creating templates with office documents
 
 The file `widget.py` in the example takes the metrics that were built in the analysis, and builds some contextual information that will be feed into an adjacent widget.  This a common use case data sciencist and business analysts
 need to summarize their analyses for a less technical audience.  The Presaltyics Ooxml Automation services allows
