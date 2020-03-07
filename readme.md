@@ -180,7 +180,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     >   >>> [print(entity) for entity in object_tree]
     >   ~~~~
     >
-    >Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use at this point.  If someone wanted to write a selection pane app for Google Slides, that'd really cool, but I haven't been able to find one to date.
+    >A similar function is avaiable in LibreOffice under View > Navigator.  But, Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use at this point.  If someone wanted to write a selection pane app for Google Slides, that'd really cool, but I haven't been able to find one to date.
 
 3. Creating the Widget Instance
 
