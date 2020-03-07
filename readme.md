@@ -276,4 +276,4 @@ The command line interface to the presalytics API is simple and powerful way to 
 
 This example walks users through how to build s Story using the presalytic and the command line interface.  This basic example demonstrates the tools commonly used for building stories, adding widgets containing different analyses, and updating Story Outlines from the command line. 
 
-If you have any questions about this example or would like help with your use case, please shoot us an email at [inquires@presalytics.io](mailto:inquires@presalytics.io)
+If you have any questions about this example or would like help with your use case, please shoot us an email at [inquires@presalytics.io](mailto:inquires@presalytics.io).
