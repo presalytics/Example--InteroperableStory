@@ -159,29 +159,28 @@ document_tree = client.ooxml_automation.documents_childobjects_get_id(document_o
 takeaway_box_id = next(o.entity_id for o in document_tree if o.entity_name == "TakeawayBox")
 ```
 
-    The last few lines of this script look collect information from the Presaltyics API.  Some items in this 
-    script refer to objects that API that will be build a after [we create them on the command line](#building-the-story-from-the-command-line).  In short, these lines pull the `story_id` from the the outline
-    in the workspace to create a [Client](https://presalytics.github.io/python-client/presalytics/index.html#presalytics.Client) instance.  The client then traverses the document tree of an uploaded `template.pptx` file
-    to get the id of the "TakeawayBox" object.  The presalytics middleware can the `takeaway_box_id` to construct urls and make API calls against the Ooxml Automation service.
+The last few lines of this script look collect information from the Presaltyics API.  Some items in this script refer to objects that API that will be build a after [we create them on the command line](#building-the-story-from-the-command-line).  In short, these lines pull the `story_id` from the the outline
+in the workspace to create a [Client](https://presalytics.github.io/python-client/presalytics/index.html#presalytics.Client) instance.  The client then traverses the document tree of an uploaded `template.pptx` file
+to get the id of the "TakeawayBox" object.  The presalytics middleware can the `takeaway_box_id` to construct urls and make API calls against the Ooxml Automation service.
 
-    Understanding how to traverse the document tree is important to understand when using the Ooxml Automation service.  When looking at `template.pptx` in PowerPoint, the entity names of objects in the object tree are 
-    shown in the selection pane.  You can open the selection pane by click the "Select" button on the "Home" tab in the ribbon.  An image showing how to identify names in `template.pptx`'s object tree is shown below:
+>Understanding how to traverse the document tree is important.  When looking at `template.pptx` in PowerPoint, the entity names of objects in the object tree are 
+shown in the selection pane.  You can open the selection pane by click the "Select" button on the "Home" tab in the ribbon.  An image showing how to identify names in `template.pptx`'s object tree is shown below:
 
-    ![PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
+![PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
 
-    > If you don't have access to PowerPoint, you can use the python interpreter to navigate the object tree using the presalytics API.  The example code below will print out your object tree in the python interactive terminal:
-    >
-    >           
-    >           >>> import presalytics
-    >           >>> story_id = presalytics.StoryOutline.import_yaml('story.yaml')
-    >           >>> client = presalytics.Client()
-    >           >>> story = client.story.story_id_get(story_id, include_relationships=True)
-    >           >>> ooxml_document_id = story.ooxml_documents[0].ooxml_automation_id
-    >           >>> object_tree = client.ooxml_automation.documents_childobjects_get_id(ooxml_document_id)
-    >           >>> [print(entity) for entity in object_tree]
-    >           
-    >
-    >A similar function is avaiable in LibreOffice under View > Navigator.  But, Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use at this point.  If someone wanted to write a selection pane app for Google Slides, that'd really cool, but I haven't been able to find one to date.
+> If you don't have access to PowerPoint, you can use the python interpreter to navigate the object tree using the presalytics API.  The example code below will print out your object tree in the python interactive terminal:
+>
+>           
+>           >>> import presalytics
+>           >>> story_id = presalytics.StoryOutline.import_yaml('story.yaml')
+>           >>> client = presalytics.Client()
+>           >>> story = client.story.story_id_get(story_id, include_relationships=True)
+>           >>> ooxml_document_id = story.ooxml_documents[0].ooxml_automation_id
+>           >>> object_tree = client.ooxml_automation.documents_childobjects_get_id(ooxml_document_id)
+>           >>> [print(entity) for entity in object_tree]
+>           
+>
+>A similar function is avaiable in LibreOffice under View > Navigator.  But, Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use.
 
 3. Creating the Widget Instance
 
@@ -211,9 +210,9 @@ Running a few commands from the bash terminal (or windows command line) can he
 presalytics config {YOUR_USERNAME} -s RESERVED_NAMES=widget.py 
 ```
 
-    This command will creat a new file, name `config.py` in your current working directory.  Using the `RESERVED_NAMES` instructs the the Presalytics library not to evaluate `widget.py` for the time being.
-    For more information on configuration options, please see the 
-    [configuration documentation](https://presalytics.io/docs/configuration).
+>This command will create a new file, name `config.py` in your current working directory.  Using the `RESERVED_NAMES` instructs the the Presalytics library not to evaluate `widget.py` for the time being.
+For more information on configuration options, please see the 
+[configuration documentation](https://presalytics.io/docs/configuration).
 
 2. Create a Story in the Presalytics API
 
@@ -221,7 +220,7 @@ presalytics config {YOUR_USERNAME} -s RESERVED_NAMES=widget.py
 presalytics create "Regression Example" --widget
 ``` 
 
-    This command will generate story from widget defined in `analysis.py`.  After this command compltes successfully, you should see a file called `story.yaml` in your current working directory that contains the Story Outline data for this Story.
+>This command will generate story from widget defined in `analysis.py`.  After this command compltes successfully, you should see a file called `story.yaml` in your current working directory that contains the Story Outline data for this Story.
 
 3. Add the Template to the new Story
 
@@ -229,7 +228,7 @@ presalytics create "Regression Example" --widget
 presalytics ooxml template.pptx add
 ```
 
-    This command uploads `template.pptx` to the Presalyics API and add reference to document on the Story object in the Story service.
+>This command uploads `template.pptx` to the Presalyics API and add reference to document on the Story object in the Story service.
 
 4. Update configuration to include `widget.py`
 
@@ -237,7 +236,7 @@ presalytics ooxml template.pptx add
 presaltyics config {YOUR_USERNAME} --overwrite
 ```
 
-    This command removes the `RESERVED_NAMES` setting from `config.py`.
+>This command removes the `RESERVED_NAMES` setting from `config.py`.
 
 5. Add a the Widget To the Story Outline
 
@@ -245,7 +244,7 @@ presaltyics config {YOUR_USERNAME} --overwrite
 presalytics modify -n "Takeaways Box" add
 ```
 
-    This command adds the widget from `widget.py` to the first page of the Story Outline in `story.yaml`
+>This command adds the widget from `widget.py` to the first page of the Story Outline in `story.yaml`
 
 6. Patch the page to display both charts and add a page title
 
@@ -254,18 +253,17 @@ presalytics modify --patch "{'op':'replace','path':'/pages/0/kind','value':'TwoU
 presalytics modify --patch "{'op':'add','path':'/pages/0/additionalProperties','value': {'title': 'Example Interoperable Story'}}" patch
 ```
 
-    These commands change the page template so that the two widgets will display side-by-side on your screen when 
-    viewing the story.
+>These commands change the page template so that the two widgets will display side-by-side on your screen when viewing the story.
 
 7. Save and View Your Story
 
-    The command below pushes the updated story to the Presaltyics API service, and shows the result on [presaltyics.io](https://presaltyics.io) in a new browser tab:
+>The command below pushes the updated story to the Presaltyics API service, and shows the result on [presaltyics.io](https://presaltyics.io) in a new browser tab:
 
 ```bash
 presalytics --view push --update
 ```
 
-    You're all set!
+You're all set!
 
 ---
 
