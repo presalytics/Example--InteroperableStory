@@ -11,16 +11,16 @@ update a widget that automates a presentation file (e.g. a PowerPoint document).
 ### Getting Started
 
 You can get started by cloning this repository from the command line:
-~~~~bash
+```bash
 git clone https://github.com/presalytics/Example--InteroperableStory.git
-~~~~
+```
 
 Then create a python virtual environment and install the required packages via pip:
-~~~~bash
+```bash
 python3 -m venv venv
 . venv/bin/activate # venv\Scripts\activate.bat on Windows
 pip install presalytics sklearn
-~~~~
+```
 
 Now, you environment is set up for the walk through below.  If youre curious how this example works, you should read the sections on [example.py](#wrapping-the-figure-in-presalytics-middleware) and [widget.py](#understanding-widget.py:-quickly-creating-templates-with-office-documents).  If you want to get going quickly, jump ahead to running the [commands to build the story](#building-the-story-from-the-command-line) in the command line. 
 
@@ -30,7 +30,7 @@ Now, you environment is set up for the walk through below.  If youre curious how
 
 This example uses the dummy analysis in the code below:
 
-~~~~python
+```python
 import presalytics
 import matplotlib.pyplot as plt
 from sklearn import datasets, linear_model
@@ -67,7 +67,7 @@ ax.set_ylabel('Y-Axis')
 # Calculate some metrics
 r_squared = lr.score(x, y)
 beta = lr.coef_[0]
-~~~~
+```
 
 This analysis is intended to be generic can be replaced by other analysis you do in 
 a python script or Jupyter notebook. 
@@ -78,9 +78,9 @@ a python script or Jupyter notebook.
 
 The final line in `analysis.py` is the following:
 
-~~~~python
+```python
 example_plot = presalytics.MatplotlibResponsiveFigure(fig, "Regression Example")
-~~~~
+```
 
 This line this the critical piece that allows this figure automatically interact with the Presaltyics API.  Every the
 Story Outline is updated, this instance of `MatplotlibResponsiveFigure` will update the parameters of the outline and push those data to the API.  From the api, this analysis can be viewed and shared with others.  
@@ -100,7 +100,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
 
     The first section of the imports the metrics from the `analysis` module, creates some variables that help user understand the signifance. These qualitative datapoints will be loading into widget instance in later steps.  For example, the *fit_quality* variable provides a qualitative interpretatin for the correlation coeficient fromt the linear regression analysis.
 
-        ~~~~python
+        ```python
         # Build qualitative data from metrics to load into template widget
         import presalytics
         from analysis import (
@@ -122,14 +122,14 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
             header_color = "FF0000"  # Red Hex color
         else:
             header_color = "00FF00"  # Green Hex Color
-        ~~~~
+        ```
 
 2. Creating Dynamic Parameters for a Widget
 
     The second section of `widget.py` conditions data so that it can be loaded into a widget in widget insance in
     the proceeding.  Some that
     
-        ~~~~python
+        ```python
         # Set that parameters for a `prealtyics.MultiXmlTransform` XmlTransform
         params = {"transforms_list": [
             {
@@ -157,7 +157,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
         document_tree = client.ooxml_automation.documents_childobjects_get_id(document_ooxml_id)
 
         takeaway_box_id = next(o.entity_id for o in document_tree if o.entity_name == "TakeawayBox")
-        ~~~~
+        ```
 
     The last few lines of this script look collect information from the Presaltyics API.  Some items in this 
     script refer to objects that API that will be build a after [we create them on the command line](#building-the-story-from-the-command-line).  In short, these lines pull the `story_id` from the the outline
@@ -167,11 +167,11 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     Understanding how to traverse the document tree is important to understand when using the Ooxml Automation service.  When looking at `template.pptx` in PowerPoint, the entity names of objects in the object tree are 
     shown in the selection pane.  You can open the selection pane by click the "Select" button on the "Home" tab in the ribbon.  An image showing how to identify names in `template.pptx`'s object tree is shown below:
 
-    [PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
+    ![PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
 
     > If you don't have access to PowerPoint, you can use the python interpreter to navigate the object tree using the presalytics API.  The example code below will print out your object tree in the python interactive terminal:
     >
-    >           ~~~~python
+    >           ```python
     >           >>> import presalytics
     >           >>> story_id = presalytics.StoryOutline.import_yaml('story.yaml')
     >           >>> client = presalytics.Client()
@@ -179,7 +179,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     >           >>> ooxml_document_id = story.ooxml_documents[0].ooxml_automation_id
     >           >>> object_tree = client.ooxml_automation.documents_childobjects_get_id(ooxml_document_id)
     >           >>> [print(entity) for entity in object_tree]
-    >           ~~~~
+    >           ```
     >
     >A similar function is avaiable in LibreOffice under View > Navigator.  But, Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use at this point.  If someone wanted to write a selection pane app for Google Slides, that'd really cool, but I haven't been able to find one to date.
 
@@ -188,7 +188,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     The final line of creates an instance of an [OoxmlEditorWidget](https://presalytics.github.io/python-client/presalytics/index.html#presalytics.OoxmlEditorWidget).  Similar to the final line in `analysis.py`, the widget
     wraps middleware around the script and automates the Story's interaction with the Presaltyics API.
 
-        ~~~~python
+        ```python
         template_widget = presalytics.OoxmlEditorWidget(
             "Takeaways Box",
             story_id,
@@ -197,7 +197,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
             presalytics.MultiXmlTransform,
             transform_params=params
         )
-        ~~~~
+        ```
 
 ---
 
@@ -207,9 +207,9 @@ Running a few commands from the bash terminal (or windows command line) can he
 
 1. Create a `config.py` file:
 
-    ~~~~bash
+    ```bash
     presalytics config {YOUR_USERNAME} -s RESERVED_NAMES=widget.py 
-    ~~~~
+    ```
 
     This command will creat a new file, name `config.py` in your current working directory.  Using the `RESERVED_NAMES` instructs the the Presalytics library not to evaluate `widget.py` for the time being.
     For more information on configuration options, please see the 
@@ -217,42 +217,42 @@ Running a few commands from the bash terminal (or windows command line) can he
 
 2. Create a Story in the Presalytics API
 
-        ~~~~bash
+        ```bash
         presalytics create "Regression Example" --widget
-        ~~~~
+        ```
 
     This command will generate story from widget defined in `analysis.py`.  After this command compltes successfully, you should see a file called `story.yaml` in your current working directory that contains the Story Outline data for this Story.
 
 3. Add the Template to the new Story
 
-        ~~~~bash
+        ```bash
         presalytics ooxml template.pptx add
-        ~~~~
+        ```
 
     This command uploads `template.pptx` to the Presalyics API and add reference to document on the Story object in the Story service.
 
 4. Update configuration to include `widget.py`
 
-        ~~~~bash
+        ```bash
         presaltyics config {YOUR_USERNAME} --overwrite
-        ~~~~
+        ```
 
     This command removes the `RESERVED_NAMES` setting from `config.py`.
 
 5. Add a the Widget To the Story Outline
 
-        ~~~~bash
+        ```bash
         presalytics modify -n "Takeaways Box" add
-        ~~~~
+        ```
 
     This command adds the widget from `widget.py` to the first page of the Story Outline in `story.yaml`
 
 6. Patch the page to display both charts and add a page title
 
-        ~~~~bash
+        ```bash
         presalytics modify --patch "{'op':'replace','path':'/pages/0/kind','value':'TwoUpWithTitle'}" patch
         presalytics modify --patch "{'op':'add','path':'/pages/0/additionalProperties','value': {'title': 'Example Interoperable Story'}}" patch
-        ~~~~
+        ```
 
     These commands change the page template so that the two widgets will display side-by-side on your screen when 
     viewing the story.
@@ -261,9 +261,9 @@ Running a few commands from the bash terminal (or windows command line) can he
 
     The command below pushes the updated story to the Presaltyics API service, and shows the result on [presaltyics.io](https://presaltyics.io) in a new browser tab:
 
-        ~~~~bash
+        ```bash
         presalytics --view push --update
-        ~~~~
+        ```
 
     You're all set!
 
