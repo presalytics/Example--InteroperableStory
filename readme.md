@@ -100,63 +100,64 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
 
     The first section of the imports the metrics from the `analysis` module, creates some variables that help user understand the signifance. These qualitative datapoints will be loading into widget instance in later steps.  For example, the *fit_quality* variable provides a qualitative interpretatin for the correlation coeficient fromt the linear regression analysis.
 
-    ~~~~python
-    # Build qualitative data from metrics to load into template widget
-    import presalytics
-    from analysis import (
-        r_squared,
-        beta,
-    )
+        ~~~~python
+        # Build qualitative data from metrics to load into template widget
+        import presalytics
+        from analysis import (
+            r_squared,
+            beta,
+        )
 
-    fit_quality_lookup = (
-        (.95, "wow!"),
-        (.8, "pretty good"),
-        (.7, "good-ish"),
-        (.5, "so-so"),
-        (.2, "meh"),
-        (0, "bad")
-    )
-    fit_quality = next(x[1] for x in fit_quality_lookup if r_squared >= x[0])
-    trend = "positive" if beta > 0 else "negitive"
-    if trend == "negitive":
-        header_color = "FF0000"  # Red Hex color
-    else:
-        header_color = "00FF00"  # Green Hex Color
-    ~~~~
+        fit_quality_lookup = (
+            (.95, "wow!"),
+            (.8, "pretty good"),
+            (.7, "good-ish"),
+            (.5, "so-so"),
+            (.2, "meh"),
+            (0, "bad")
+        )
+        fit_quality = next(x[1] for x in fit_quality_lookup if r_squared >= x[0])
+        trend = "positive" if beta > 0 else "negitive"
+        if trend == "negitive":
+            header_color = "FF0000"  # Red Hex color
+        else:
+            header_color = "00FF00"  # Green Hex Color
+        ~~~~
 
 2. Creating Dynamic Parameters for a Widget
 
     The second section of `widget.py` conditions data so that it can be loaded into a widget in widget insance in
     the proceeding.  Some that
-    ~~~~python
-    # Set that parameters for a `prealtyics.MultiXmlTransform` XmlTransform
-    params = {"transforms_list": [
-        {
-            'name': 'TextReplace',
-            'function_params': {
-                'trend': trend,
-                'beta': str(round(beta, 2)),
-                'r_squared': str(round(r_squared * 100, 2)) + "%",
-                'fit_quality': fit_quality
+    
+        ~~~~python
+        # Set that parameters for a `prealtyics.MultiXmlTransform` XmlTransform
+        params = {"transforms_list": [
+            {
+                'name': 'TextReplace',
+                'function_params': {
+                    'trend': trend,
+                    'beta': str(round(beta, 2)),
+                    'r_squared': str(round(r_squared * 100, 2)) + "%",
+                    'fit_quality': fit_quality
+                },
             },
-        },
-        {
-            'name': 'ChangeShapeColor',
-            'function_params': {
-                'hex_color': header_color,
-                'object_name': "header"  # From the 'Selection Pane' of PowerPoint
+            {
+                'name': 'ChangeShapeColor',
+                'function_params': {
+                    'hex_color': header_color,
+                    'object_name': "header"  # From the 'Selection Pane' of PowerPoint
+                }
             }
-        }
-    ]}
-    # Collect data from the Presaltyics API so the OoxmlEditorWidget can dynamically update
-    story_id = presalytics.StoryOutline.import_yaml("story.yaml").story_id
-    client = presalytics.Client()
-    story = client.story.story_id_get(story_id, include_relationships=True)
-    document_ooxml_id = story.ooxml_documents[0].ooxml_automation_id
-    document_tree = client.ooxml_automation.documents_childobjects_get_id(document_ooxml_id)
+        ]}
+        # Collect data from the Presaltyics API so the OoxmlEditorWidget can dynamically update
+        story_id = presalytics.StoryOutline.import_yaml("story.yaml").story_id
+        client = presalytics.Client()
+        story = client.story.story_id_get(story_id, include_relationships=True)
+        document_ooxml_id = story.ooxml_documents[0].ooxml_automation_id
+        document_tree = client.ooxml_automation.documents_childobjects_get_id(document_ooxml_id)
 
-    takeaway_box_id = next(o.entity_id for o in document_tree if o.entity_name == "TakeawayBox")
-    ~~~~
+        takeaway_box_id = next(o.entity_id for o in document_tree if o.entity_name == "TakeawayBox")
+        ~~~~
 
     The last few lines of this script look collect information from the Presaltyics API.  Some items in this 
     script refer to objects that API that will be build a after [we create them on the command line](#building-the-story-from-the-command-line).  In short, these lines pull the `story_id` from the the outline
@@ -170,15 +171,15 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
 
     > If you don't have access to PowerPoint, you can use the python interpreter to navigate the object tree using the presalytics API.  The example code below will print out your object tree in the python interactive terminal:
     >
-    >   ~~~~python
-    >   >>> import presalytics
-    >   >>> story_id = presalytics.StoryOutline.import_yaml('story.yaml')
-    >   >>> client = presalytics.Client()
-    >   >>> story = client.story.story_id_get(story_id, include_relationships=True)
-    >   >>> ooxml_document_id = story.ooxml_documents[0].ooxml_automation_id
-    >   >>> object_tree = client.ooxml_automation.documents_childobjects_get_id(ooxml_document_id)
-    >   >>> [print(entity) for entity in object_tree]
-    >   ~~~~
+    >           ~~~~python
+    >           >>> import presalytics
+    >           >>> story_id = presalytics.StoryOutline.import_yaml('story.yaml')
+    >           >>> client = presalytics.Client()
+    >           >>> story = client.story.story_id_get(story_id, include_relationships=True)
+    >           >>> ooxml_document_id = story.ooxml_documents[0].ooxml_automation_id
+    >           >>> object_tree = client.ooxml_automation.documents_childobjects_get_id(ooxml_document_id)
+    >           >>> [print(entity) for entity in object_tree]
+    >           ~~~~
     >
     >A similar function is avaiable in LibreOffice under View > Navigator.  But, Google Slides, unfortunately, makes it really difficult to get this information.  The Ooxml Automation service is much simpler to use at this point.  If someone wanted to write a selection pane app for Google Slides, that'd really cool, but I haven't been able to find one to date.
 
@@ -187,16 +188,16 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     The final line of creates an instance of an [OoxmlEditorWidget](https://presalytics.github.io/python-client/presalytics/index.html#presalytics.OoxmlEditorWidget).  Similar to the final line in `analysis.py`, the widget
     wraps middleware around the script and automates the Story's interaction with the Presaltyics API.
 
-    ~~~~python
-    template_widget = presalytics.OoxmlEditorWidget(
-        "Takeaways Box",
-        story_id,
-        takeaway_box_id,
-        presalytics.OoxmlEndpointMap.group(),
-        presalytics.MultiXmlTransform,
-        transform_params=params
-    )
-    ~~~~
+        ~~~~python
+        template_widget = presalytics.OoxmlEditorWidget(
+            "Takeaways Box",
+            story_id,
+            takeaway_box_id,
+            presalytics.OoxmlEndpointMap.group(),
+            presalytics.MultiXmlTransform,
+            transform_params=params
+        )
+        ~~~~
 
 ---
 
@@ -216,42 +217,42 @@ Running a few commands from the bash terminal (or windows command line) can he
 
 2. Create a Story in the Presalytics API
 
-    ~~~~bash
-    presalytics create "Regression Example" --widget
-    ~~~~
+        ~~~~bash
+        presalytics create "Regression Example" --widget
+        ~~~~
 
     This command will generate story from widget defined in `analysis.py`.  After this command compltes successfully, you should see a file called `story.yaml` in your current working directory that contains the Story Outline data for this Story.
 
 3. Add the Template to the new Story
 
-    ~~~~bash
-    presalytics ooxml template.pptx add
-    ~~~~
+        ~~~~bash
+        presalytics ooxml template.pptx add
+        ~~~~
 
     This command uploads `template.pptx` to the Presalyics API and add reference to document on the Story object in the Story service.
 
 4. Update configuration to include `widget.py`
 
-    ~~~~bash
-    presaltyics config {YOUR_USERNAME} --overwrite
-    ~~~~
+        ~~~~bash
+        presaltyics config {YOUR_USERNAME} --overwrite
+        ~~~~
 
     This command removes the `RESERVED_NAMES` setting from `config.py`.
 
 5. Add a the Widget To the Story Outline
 
-    ~~~~bash
-    presalytics modify -n "Takeaways Box" add
-    ~~~~
+        ~~~~bash
+        presalytics modify -n "Takeaways Box" add
+        ~~~~
 
     This command adds the widget from `widget.py` to the first page of the Story Outline in `story.yaml`
 
 6. Patch the page to display both charts and add a page title
 
-    ~~~~bash
-    presalytics modify --patch "{'op':'replace','path':'/pages/0/kind','value':'TwoUpWithTitle'}" patch
-    presalytics modify --patch "{'op':'add','path':'/pages/0/additionalProperties','value': {'title': 'Example Interoperable Story'}}" patch
-    ~~~~
+        ~~~~bash
+        presalytics modify --patch "{'op':'replace','path':'/pages/0/kind','value':'TwoUpWithTitle'}" patch
+        presalytics modify --patch "{'op':'add','path':'/pages/0/additionalProperties','value': {'title': 'Example Interoperable Story'}}" patch
+        ~~~~
 
     These commands change the page template so that the two widgets will display side-by-side on your screen when 
     viewing the story.
@@ -260,9 +261,9 @@ Running a few commands from the bash terminal (or windows command line) can he
 
     The command below pushes the updated story to the Presaltyics API service, and shows the result on [presaltyics.io](https://presaltyics.io) in a new browser tab:
 
-    ~~~~bash
-    presalytics --view push --update
-    ~~~~
+        ~~~~bash
+        presalytics --view push --update
+        ~~~~
 
     You're all set!
 
