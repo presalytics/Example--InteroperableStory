@@ -167,7 +167,7 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     Understanding how to traverse the document tree is important to understand when using the Ooxml Automation service.  When looking at `template.pptx` in PowerPoint, the entity names of objects in the object tree are 
     shown in the selection pane.  You can open the selection pane by click the "Select" button on the "Home" tab in the ribbon.  An image showing how to identify names in `template.pptx`'s object tree is shown below:
 
-    ![PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
+    [PowerPoint Screenshot](https://raw.githubusercontent.com/presalytics/Example--InteroperableStory/master/selection_pane.PNG)
 
     > If you don't have access to PowerPoint, you can use the python interpreter to navigate the object tree using the presalytics API.  The example code below will print out your object tree in the python interactive terminal:
     >
