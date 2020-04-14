@@ -188,16 +188,16 @@ users build templates in productivity software (e.g., PowerPoint, Google Slides)
     The final line of creates an instance of an [OoxmlEditorWidget](https://presalytics.github.io/python-client/presalytics/index.html#presalytics.OoxmlEditorWidget).  Similar to the final line in `analysis.py`, the widget
     wraps middleware around the script and automates the Story's interaction with the Presaltyics API.
 
-        ```python
-        template_widget = presalytics.OoxmlEditorWidget(
-            "Takeaways Box",
-            story_id,
-            takeaway_box_id,
-            presalytics.OoxmlEndpointMap.group(),
-            presalytics.MultiXmlTransform,
-            transform_params=params
-        )
-        ```
+    ```python
+    template_widget = presalytics.OoxmlEditorWidget(
+        "Takeaways Box",
+        story_id,
+        takeaway_box_id,
+        presalytics.OoxmlEndpointMap.group(),
+        presalytics.MultiXmlTransform,
+        transform_params=params
+    )
+    ```
 
 ---
 
